@@ -1,0 +1,28 @@
+package com.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import com.bean.SungJukDTO;
+
+@Controller
+public class SungJukController {
+	
+	@GetMapping(value="sungJuk/input.do")
+	public String input() {
+		return "/sungJuk/input";
+	}
+	
+	@GetMapping(value="sungJuk/result.do")
+	public String result(@ModelAttribute SungJukDTO sungJukDTO, Model model) {
+		model.addAttribute("name", sungJukDTO.getName());
+		model.addAttribute("kor", sungJukDTO.getKor());
+		model.addAttribute("eng", sungJukDTO.getEng());
+		model.addAttribute("math", sungJukDTO.getMath());
+		model.addAttribute("tot", sungJukDTO.getTot());
+		model.addAttribute("avg", sungJukDTO.getAvg());
+		return "/sungJuk/result";
+	}
+
+}

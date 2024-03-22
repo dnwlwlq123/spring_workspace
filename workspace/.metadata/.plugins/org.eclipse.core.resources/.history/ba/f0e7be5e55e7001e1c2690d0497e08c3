@@ -1,0 +1,23 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	pg = <input type="text" id="pg" value="${pg }">
+	
+	<a href="/Chapter06_Web/"><img src="../image/bitcamp.png"></a>
+	<table border="1" frame="hsides" role="rows">
+		<tr>
+			<th>이름</th>
+			<th>아이디</th>
+			<th>비밀번호</th>
+		</tr>
+		
+		<!-- 동적 처리 -->
+	</table>
+</body>
+</html>

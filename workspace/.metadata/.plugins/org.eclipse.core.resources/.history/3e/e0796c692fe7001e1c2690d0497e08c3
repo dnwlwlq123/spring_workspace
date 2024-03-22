@@ -1,0 +1,14 @@
+$(function(){
+$('#writeBtn').click(function(){
+	$('#nameDiv').empty();
+	$('#idDiv').empty();
+	$('#pwdDiv').empty();
+	
+	if($('#name').value() == '')
+		$('#nameDiv').text('이름 입력');
+	else if($('#id').value() == '')
+		$('#idDiv').text('아이디 입력');
+	else($('#pwd').value() == '')
+		$('#pwdDiv').text('비밀번호 입력');
+	});
+});

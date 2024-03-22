@@ -1,0 +1,72 @@
+package user.controller;
+
+import java.io.File;
+import java.io.IOException;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import user.bean.UserImageDTO;
+
+@Controller
+@RequestMapping(value="user")
+public class UserUploadController {
+
+	@GetMapping(value="uploadForm")
+	public String uploadForm() {
+		return "user/uploadForm";
+	}
+	
+	@PostMapping(value="upload")
+	@ResponseBody
+	public String upload(@ModelAttribute UserImageDTO userImageDTO,
+						 @RequestParam MultipartFile img,
+						 HttpSession session) {
+		
+		//가상폴더
+		String filePath_lier = "D:\\spring\\workspace\\Chapter06_Web\\src\\main\\webapp\\WEB-INF\\storage";      
+		//실제폴더
+		String filePath = session.getServletContext().getRealPath("WEB-INF\\storage");
+		System.out.println("실제폴더 = " + filePath);
+		//이미지의 이름
+		String fileName = img.getOriginalFilename();
+		//파일복사
+		File file = new File(filePath_lier, fileName);
+		
+		try {
+			img.transferTo(file);
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		userImageDTO.setImage1(fileName);
+		return "<img srt='/Chapter06_Web/storage/'" + fileName +  "/>";
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

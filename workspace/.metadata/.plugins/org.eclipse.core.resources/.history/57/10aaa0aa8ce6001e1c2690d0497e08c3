@@ -1,0 +1,18 @@
+package com.controller;
+
+@Controller
+public class SumController {
+
+	int X;
+	int Y;
+	
+	
+	@RequestMapping(value="/hello.do", method=RequestMethod.GET)
+	public ModelAndView sum() {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("result", "Hello Spring MVC!!");
+		//mav.setViewName("hello");//JSP의 파일명 => /view/hello.jsp
+		modelAndView.setViewName("/view/hello");
+		return modelAndView;
+	}
+}

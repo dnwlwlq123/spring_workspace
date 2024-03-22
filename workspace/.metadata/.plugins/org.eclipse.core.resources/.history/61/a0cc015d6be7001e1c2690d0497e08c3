@@ -1,0 +1,70 @@
+package user.service;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import user.bean.UserDTO;
+import user.bean.UserPaging;
+import user.dao.UserDAO;
+
+@Service
+public class UserServiceImpl implements UserService {
+	@Autowired
+	private UserDAO userDAO;
+	@Override
+	public String isExistId(String id) {
+		UserDTO userDTO = userDAO.isExistId(id);
+		
+		if(userDTO == null)
+			return "non_exist";
+		else
+			return "exist";
+	}
+	@Override
+	public void write(UserDTO userDTO) {
+		userDAO.write(userDTO);
+	}
+	@Override
+	public List<UserDTO> getUserList(HttpServletRequest request, int pg) {
+		//한페이지당 3개씩
+		pg = Integer.parseInt(request.getParameter("pg"));
+		request.setAttribute("pg", pg);
+		
+		
+		//DB
+		int endNum = pg * 5;
+		int startNum = endNum - 4;
+		
+		
+		
+		//UserDAO userDAO = UserDAO.getInstance();
+		List<UserDTO> list = userDAO.boardList(startNum, endNum);
+		
+		//페이징처리
+		int totalA = userDAO.getTotalA(); //총글수
+		
+		
+		UserPaging userPaging = new UserPaging();
+		userPaging.setCurrentPage(pg);
+		userPaging.setPageBlock(3);
+		userPaging.setPageSize(5);
+		userPaging.setTotalA(totalA);
+		userPaging.makePagingHTML();
+		//List<UserDTO> list1 = userDAO.getUserList(pg);
+		// JSON 형식으로 변환해서 보내야함
+		return list;
+	}
+	@Override
+	public List<UserDTO> getUserList(int pg) {
+		List<UserDTO> list = userDAO.getUserList(pg);
+		return list;
+	}
+
+	
+
+	
+}
