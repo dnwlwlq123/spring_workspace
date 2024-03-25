@@ -13,7 +13,7 @@
 	<p><a href="/Chapter06_Web/user/list?pg=1">출력</a></p>
 	<br>
 	<p><a href="/Chapter06_Web/user/uploadForm">파일 업로드</a></p>
-	<p><a href="/Chapter06_Web/user/uploadForm_AJax">파일 업로드_AJax</a></p>
+	<p><a href="/Chapter06_Web/user/uploadFormAJax">파일 업로드AJax</a></p>
 	<br>
 	<p><a href="/Chapter06_Web/user/uploadList">이미지 출력</a></p>
 </h3>

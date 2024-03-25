@@ -2,10 +2,12 @@ package user.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,10 +18,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import user.bean.UserImageDTO;
+import user.service.UserUploadService;
 
 @Controller
 @RequestMapping(value="user")
 public class UserUploadController {
+	@Autowired
+	private UserUploadService userUploadService;
 
 	@GetMapping(value="uploadForm")
 	public String uploadForm() {
@@ -120,11 +125,15 @@ public class UserUploadController {
 		File file;
 		String result="";
 		
+		List<String> fileNameList=new ArrayList<>();;
+		
 		//파일명만 모아서 DB로 보내기
 		//~~~~;
 		for(MultipartFile img : list) {
 			fileName = img.getOriginalFilename();
 			file = new File(filePath, fileName);
+			
+			fileNameList.add(fileName);
 			try {
 				img.transferTo(file);
 			} catch (IllegalStateException e) {
@@ -134,8 +143,22 @@ public class UserUploadController {
 			}
 			result += "<span><img src='/Chapter06_Web/storage/" + fileName +  "'/></span>";
 		}//for
+		
+		//DB
+		userUploadService.upload(userImageDTO, fileNameList);
 
 		return result;
+	}
+	
+	@GetMapping(value="uploadList")
+	public String uploadList() {
+		return "user/uploadList";
+	}
+	
+	@PostMapping(value="getUploadList")
+	@ResponseBody
+	public List<UserImageDTO> getUploadList() {
+		return userUploadService.getUploadList();
 	}
 }
 
