@@ -2,6 +2,8 @@ package user.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import user.bean.UserImageDTO;
+import user.service.ObjectStorageService;
 import user.service.UserUploadService;
 
 @Controller
@@ -25,6 +29,10 @@ import user.service.UserUploadService;
 public class UserUploadController {
 	@Autowired
 	private UserUploadService userUploadService;
+	@Autowired
+	private ObjectStorageService objectStorageService;
+	
+	private String bucketName = "bitcamp-6th-bucket-80";
 
 	@GetMapping(value="uploadForm")
 	public String uploadForm() {
@@ -121,19 +129,26 @@ public class UserUploadController {
 		System.out.println("실제폴더 = " + filePath);
 		
 		//이미지의 이름
-		String fileName;
+		String imageFileName = "";
+		String originalFileName = "";
 		File file;
 		String result="";
 		
-		List<String> fileNameList=new ArrayList<>();
 		
 		//파일명만 모아서 DB로 보내기
+		List<UserImageDTO> userImageList=new ArrayList<>();
+		
+		
 		//~~~~;
 		for(MultipartFile img : list) {
-			fileName = img.getOriginalFilename();
-			file = new File(filePath, fileName);
+			originalFileName = img.getOriginalFilename();
+			System.out.println("originamlFileName = " + originalFileName);
 			
-			fileNameList.add(fileName);
+			imageFileName = objectStorageService.uploadFile(bucketName, "storage/", img);
+			
+			
+			file = new File(filePath, originalFileName);
+			
 			try {
 				img.transferTo(file);
 			} catch (IllegalStateException e) {
@@ -141,11 +156,27 @@ public class UserUploadController {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			result += "<span><img src='/mini/storage/" + fileName +  "'/></span>";
+			try {
+				result += "<span><img src='/mini/storage/" + 
+				URLEncoder.encode(originalFileName, "UTF-8") +  "'/></span>";
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			UserImageDTO dto = new UserImageDTO();
+			dto.setImageName(userImageDTO.getImageName());
+			dto.setImageContent(userImageDTO.getImageContent());
+			dto.setImageFileName(imageFileName);
+			dto.setImageOriginalName(originalFileName);
+			
+			userImageList.add(dto);
 		}//for
 		
+		
+		
 		//DB
-		userUploadService.upload(userImageDTO, fileNameList);
+		userUploadService.upload(userImageList);
 
 		return result;
 	}
@@ -159,6 +190,46 @@ public class UserUploadController {
 	@ResponseBody
 	public List<UserImageDTO> getUploadList() {
 		return userUploadService.getUploadList();
+	}
+	
+	@GetMapping(value="uploadView")
+	public String uploadView(@RequestParam String seq, Model model) {
+		model.addAttribute("seq", seq);
+		return "user/uploadView";
+	}
+	
+	@PostMapping(value="getUploadImage")//1개의 이미지
+	@ResponseBody
+	public UserImageDTO getUploadImage(@RequestParam String seq) {
+		return userUploadService.getUploadImage(seq);
+	}
+	
+	@GetMapping(value="uploadUpdateForm")
+	public String uploadUpdateForm(@RequestParam String seq, Model model) {
+		model.addAttribute("seq", seq);
+		return "user/uploadUpdateForm";
+	}
+	
+	@PostMapping(value="uploadUpdate", produces = "text/html; charset=UTF-8")
+	@ResponseBody
+	public String uploadUpdate(@ModelAttribute UserImageDTO userImageDTO,
+							   @RequestParam MultipartFile img) {
+		System.out.println("seq = " + userImageDTO.getSeq());
+		
+		userUploadService.uploadUpdate(userImageDTO, img);
+		
+		//DB
+		return "이미지 수정 완료";
+		
+	}
+	
+	@PostMapping(value="uploadDelete")
+	@ResponseBody
+	public void uploadDelete(@RequestParam String[] check) {
+		for(String c : check)
+		System.out.println(c);
+		
+		userUploadService.uploadDelete(check);
 	}
 }
 

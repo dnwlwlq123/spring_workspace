@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @PropertySource("classpath:spring/db.properties")
 @EnableTransactionManagement
-@MapperScan("user.dao")
+//@MapperScan("user.dao")
 
 public class SpringConfiguration {
 
@@ -53,7 +53,7 @@ public class SpringConfiguration {
 		sqlSessionFactoryBean.setDataSource(dataSource());
 		//sqlSessionFactoryBean.setConfigLocation(new ClassPathResource("spring/mybatis-config.xml"));
 		
-		sqlSessionFactoryBean.setTypeAliasesPackage("user.bean");
+		sqlSessionFactoryBean.setTypeAliasesPackage("*.bean");
 		
 		//sqlSessionFactoryBean.setMapperLocations(new ClassPathResource("mapper/userMapper.xml"));
 		/*sqlSessionFactoryBean.setMapperLocations(

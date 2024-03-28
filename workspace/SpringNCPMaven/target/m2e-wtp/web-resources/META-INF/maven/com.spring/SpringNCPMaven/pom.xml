@@ -206,7 +206,14 @@
 	    <artifactId>commons-fileupload</artifactId>
 	    <version>1.5</version>
 	</dependency>
-
+	
+	<!-- AWS -->
+	<dependency>
+	    <groupId>com.amazonaws</groupId>
+	    <artifactId>aws-java-sdk-s3</artifactId>
+	    <version>1.12.566</version>
+	</dependency>
+	
 	<!-- Lombok -->
 	<dependency>
 	    <groupId>org.projectlombok</groupId>

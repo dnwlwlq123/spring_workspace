@@ -9,8 +9,16 @@ import user.bean.UserImageDTO;
 @Mapper
 public interface UserUploadDAO {
 
-	public void upload(UserImageDTO userImageDTO, List<String> fileNameList);
+	public void upload(List<UserImageDTO> userImageList);
 
 	public List<UserImageDTO> getUploadList();
 
+	public UserImageDTO getUploadImage(String seq);
+
+	public String getImageFileName(int seq);
+
+	public void uploadUpdate(UserImageDTO userImageDTO);
+
+	public void uploadDelete(List<String> list);
+	
 }

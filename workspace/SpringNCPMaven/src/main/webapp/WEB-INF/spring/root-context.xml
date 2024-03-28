@@ -13,6 +13,6 @@
 <context:component-scan base-package="user.bean" />
 
 <!-- SpringConfiguration.java 설정했음 -->
-<!-- <mybatis-spring:scan base-package="user.dao"/> -->
+ <mybatis-spring:scan base-package="user.dao"/> 
 
 </beans>
